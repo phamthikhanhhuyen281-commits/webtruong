@@ -1,103 +1,125 @@
 
 import React, { useState } from 'react';
 import { MenuSection } from '../types';
-import { NAV_ITEMS, SCHOOL_INFO } from '../constants';
+import { NAV_ITEMS } from '../constants';
 
 interface NavbarProps {
   activeSection: MenuSection;
   onNavigate: (section: MenuSection) => void;
+  darkMode: boolean;
+  toggleDarkMode: () => void;
+  isStudentMode: boolean;
+  toggleStudentMode: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate }) => {
-  const [isIntroOpen, setIsIntroOpen] = useState(false);
+const Navbar: React.FC<NavbarProps> = ({ 
+  activeSection, 
+  onNavigate, 
+  darkMode, 
+  toggleDarkMode,
+  isStudentMode,
+  toggleStudentMode
+}) => {
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  const isActive = (item: any) => {
+    if (activeSection === item.id) return true;
+    return item.children?.some((child: any) => child.id === activeSection);
+  };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 blue-glass border-b border-blue-100 shadow-sm px-4 md:px-8">
-      <div className="max-w-7xl mx-auto flex items-center justify-between h-20">
-        {/* Logo & School Name */}
+    <nav className="fixed top-0 left-0 right-0 z-50 blue-glass border-b border-white/50 dark:border-slate-800/50 shadow-sm px-6">
+      <div className="max-w-[1600px] mx-auto flex items-center justify-between h-20">
+        {/* Brand */}
         <div 
-          className="flex items-center gap-3 cursor-pointer group"
+          className="flex items-center gap-4 cursor-pointer group shrink-0"
           onClick={() => onNavigate(MenuSection.HOME)}
         >
-          <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-blue-200 shadow-lg group-hover:scale-105 transition-transform">
+          <div className={`relative w-10 h-10 rounded-2xl flex items-center justify-center text-white font-black shadow-lg transition-all duration-500 ${isStudentMode ? 'bg-pink-500 rotate-12' : 'bg-blue-600'}`}>
             CT
           </div>
-          <div className="hidden sm:block">
-            <h1 className="text-blue-900 font-bold text-sm md:text-lg leading-tight">THPT CAO THẮNG</h1>
-            <p className="text-blue-500 text-[10px] md:text-xs font-medium uppercase tracking-widest">Hương Sơn, Hà Tĩnh</p>
+          <div className="hidden xl:block">
+            <h1 className="text-slate-900 dark:text-white font-black text-sm leading-none tracking-tight uppercase">THPT CAO THẮNG</h1>
+            <p className={`text-[8px] font-black uppercase tracking-[0.2em] mt-0.5 ${isStudentMode ? 'text-pink-500' : 'text-blue-500'}`}>
+              {isStudentMode ? 'Gia đình thân yêu' : 'Hương Sơn • Hà Tĩnh'}
+            </p>
           </div>
         </div>
 
-        {/* Navigation Links */}
-        <div className="flex items-center space-x-2 md:space-x-8">
-          {/* Home Icon Item */}
-          <button 
-            onClick={() => onNavigate(MenuSection.HOME)}
-            className={`nav-item flex items-center px-4 py-2 rounded-full transition-all ${
-              activeSection === MenuSection.HOME 
-                ? 'bg-blue-600 text-white shadow-md' 
-                : 'text-blue-700 hover:bg-blue-50'
-            }`}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-            <span className="nav-hover-text font-medium text-sm">Trang chủ</span>
-          </button>
-
-          {/* Introduction with Sub-items */}
-          <div 
-            className="relative"
-            onMouseEnter={() => setIsIntroOpen(true)}
-            onMouseLeave={() => setIsIntroOpen(false)}
-          >
-            <button 
-              className={`flex items-center px-4 py-2 rounded-full font-medium text-sm transition-all ${
-                [MenuSection.HISTORY, MenuSection.VISION, MenuSection.ORGANIZATION, MenuSection.ACHIEVEMENTS].includes(activeSection)
-                  ? 'bg-blue-600 text-white'
-                  : 'text-blue-700 hover:bg-blue-50'
-              }`}
+        {/* Dynamic Navigation */}
+        <div className="hidden lg:flex items-center space-x-1">
+          {NAV_ITEMS.map((item) => (
+            <div 
+              key={item.id} 
+              className="relative group/nav"
+              onMouseEnter={() => item.children && setOpenDropdown(item.id)}
+              onMouseLeave={() => setOpenDropdown(null)}
             >
-              Giới thiệu
-              <svg xmlns="http://www.w3.org/2000/svg" className={`ml-1 h-4 w-4 transition-transform ${isIntroOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            
-            {isIntroOpen && (
-              <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-xl shadow-xl border border-blue-50 py-2 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-                {NAV_ITEMS.find(i => i.label === 'Giới thiệu')?.children?.map((child) => (
-                  <button
-                    key={child.id}
-                    onClick={() => {
-                      onNavigate(child.id);
-                      setIsIntroOpen(false);
-                    }}
-                    className={`w-full text-left px-4 py-3 text-sm transition-colors hover:bg-blue-50 ${
-                      activeSection === child.id ? 'text-blue-600 font-semibold bg-blue-50' : 'text-slate-600'
-                    }`}
-                  >
-                    {child.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+              <button 
+                onClick={() => !item.children && onNavigate(item.id)}
+                className={`flex items-center px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
+                  isActive(item)
+                    ? (isStudentMode ? 'bg-pink-500 text-white' : 'bg-blue-600 text-white')
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-slate-800'
+                }`}
+              >
+                {item.label}
+                {item.children && (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="ml-1.5 h-3 w-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
+                  </svg>
+                )}
+              </button>
 
+              {item.children && openDropdown === item.id && (
+                <div className="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl shadow-2xl p-2 animate-in fade-in zoom-in-95 duration-200">
+                  {item.children.map((child) => (
+                    <button
+                      key={child.id}
+                      onClick={() => {
+                        onNavigate(child.id);
+                        setOpenDropdown(null);
+                      }}
+                      className={`w-full text-left px-5 py-3.5 text-[10px] font-bold uppercase tracking-wider transition-all rounded-xl mb-1 last:mb-0 ${
+                        activeSection === child.id 
+                          ? (isStudentMode ? 'bg-pink-50 dark:bg-pink-900/30 text-pink-600' : 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400') 
+                          : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600'
+                      }`}
+                    >
+                      {child.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Controls */}
+        <div className="flex items-center gap-3">
+          {/* Student Mode Toggle */}
           <button 
-            onClick={() => onNavigate(MenuSection.NEWS)}
-            className={`hidden md:block px-4 py-2 rounded-full font-medium text-sm transition-all ${
-              activeSection === MenuSection.NEWS ? 'bg-blue-600 text-white' : 'text-blue-700 hover:bg-blue-50'
+            onClick={toggleStudentMode}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-full border-2 transition-all font-black text-[9px] uppercase tracking-wider ${
+              isStudentMode 
+              ? 'bg-pink-500 border-pink-400 text-white' 
+              : 'bg-white border-blue-100 text-blue-600 hover:bg-blue-50'
             }`}
           >
-            Tin tức
+            <span className="text-sm">{isStudentMode ? '🎒' : '👔'}</span>
+            <span className="hidden sm:inline">{isStudentMode ? 'Học sinh' : 'Chuẩn'}</span>
           </button>
 
+          <button 
+            onClick={toggleDarkMode}
+            className="w-10 h-10 flex items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-amber-400 transition-colors"
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
+          
           <button 
             onClick={() => onNavigate(MenuSection.CONTACT)}
-            className={`px-4 py-2 rounded-full font-medium text-sm transition-all ${
-              activeSection === MenuSection.CONTACT ? 'bg-blue-600 text-white' : 'text-blue-700 hover:bg-blue-50'
-            }`}
+            className={`hidden sm:block px-5 py-2.5 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl shadow-lg transition-all ${isStudentMode ? 'bg-pink-500 hover:bg-pink-600' : 'bg-blue-600 hover:bg-blue-700'}`}
           >
             Liên hệ
           </button>

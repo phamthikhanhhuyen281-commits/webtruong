@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
   <head>
@@ -7,28 +8,64 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+      :root {
+        --bg-color: #f8fafc;
+        --text-color: #0f172a;
+        --card-bg: rgba(255, 255, 255, 0.85);
+      }
+      .dark {
+        --bg-color: #020617;
+        --text-color: #f1f5f9;
+        --card-bg: rgba(30, 41, 59, 0.7);
+      }
       body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f8fafc;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
         margin: 0;
+        overflow-x: hidden;
+        transition: background-color 0.3s ease, color 0.3s ease;
       }
       .blue-glass {
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        background: var(--card-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
       }
-      /* Custom transitions for the interactive menu */
       .nav-hover-text {
         max-width: 0;
         overflow: hidden;
-        transition: max-width 0.3s ease-in-out, margin-left 0.3s ease-in-out;
+        transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1), margin-left 0.3s ease;
         white-space: nowrap;
       }
       .nav-item:hover .nav-hover-text {
-        max-width: 100px;
-        margin-left: 8px;
+        max-width: 120px;
+        margin-left: 10px;
+      }
+      .text-glow {
+        text-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+      }
+      .card-glow:hover {
+        box-shadow: 0 20px 40px -15px rgba(59, 130, 246, 0.2);
+        transform: translateY(-8px);
+      }
+      @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+      }
+      .float-animation {
+        animation: float 6s ease-in-out infinite;
+      }
+      .dark-transition-mask {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9999;
+        background: #000;
+        opacity: 0;
+        transition: opacity 0.5s ease;
       }
     </style>
   <script type="importmap">
@@ -43,6 +80,5 @@
 </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
   </body>
 </html>

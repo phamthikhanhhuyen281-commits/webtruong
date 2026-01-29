@@ -1,5 +1,7 @@
 {
-  "name": "Copy of THPT Cao Thắng - Hương Sơn",
-  "description": "A modern school website for THPT Cao Thắng, Hương Sơn, Hà Tĩnh, featuring a blue-themed design, interactive navigation, and detailed school information.",
-  "requestFramePermissions": []
+  "name": "THPT Cao Thắng - Hương Sơn",
+  "description": "Cổng thông tin điện tử chính thức của trường THPT Cao Thắng, Hương Sơn, Hà Tĩnh.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
 }

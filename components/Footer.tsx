@@ -57,8 +57,10 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           <ul className="space-y-3 text-blue-300 text-sm">
             <li><button onClick={() => onNavigate(MenuSection.HISTORY)} className="hover:text-white transition-colors">Lịch sử nhà trường</button></li>
             <li><button onClick={() => onNavigate(MenuSection.VISION)} className="hover:text-white transition-colors">Tầm nhìn sứ mệnh</button></li>
-            <li><button onClick={() => onNavigate(MenuSection.ORGANIZATION)} className="hover:text-white transition-colors">Ban giám hiệu</button></li>
-            <li><button onClick={() => onNavigate(MenuSection.ACHIEVEMENTS)} className="hover:text-white transition-colors">Khen thưởng kỷ luật</button></li>
+            {/* Fix: Property 'ORGANIZATION' does not exist on type 'typeof MenuSection'. Using 'STAFF_BOARD' instead. */}
+            <li><button onClick={() => onNavigate(MenuSection.STAFF_BOARD)} className="hover:text-white transition-colors">Ban giám hiệu</button></li>
+            {/* Fix: Property 'ACHIEVEMENTS' does not exist on type 'typeof MenuSection'. Using 'ACHIEVEMENTS_GENERAL' instead. */}
+            <li><button onClick={() => onNavigate(MenuSection.ACHIEVEMENTS_GENERAL)} className="hover:text-white transition-colors">Khen thưởng kỷ luật</button></li>
           </ul>
         </div>
 
